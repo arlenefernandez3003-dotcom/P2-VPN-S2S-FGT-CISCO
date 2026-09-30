@@ -386,8 +386,6 @@ En 7.6.2 el asistente es una sola pantalla con tres bloques (**VPN Tunnel**, **R
 
 **Resumen y Submit:** en la pantalla **Review** el asistente lista los objetos que va a crear (grupos de direcciones `VPN-to-Cisco_local` y `VPN-to-Cisco_remote`, la interfaz de Fase 1 y Fase 2, la zona, las dos políticas y la ruta hacia la red remota). Pulsar **Submit** y esperar a que termine **sin mensajes de error**.
 
-> ⚠️ El asistente crea todos los objetos en una sola operación. Si aparece un error (por ejemplo `phase1 interface object VPN-to-Cisco already exists`), el túnel quedó a medias: borrarlo desde `VPN → IPsec Tunnels` (primero las políticas `vpn_VPN-to-Cisco_*` en `Policy & Objects → Firewall Policy`) y volver a ejecutar el asistente completo. No completar la Fase 2 a mano por CLI.
-
 > Ver evidencia: [09_ipsec_resumen_fortigate.png](screenshots/09_ipsec_resumen_fortigate.png)
 
 ---
