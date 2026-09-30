@@ -421,80 +421,92 @@ Anotar estos campos:
 ---
 
 ### Paso 9. VPN IPsec en el Router Cisco (CLI)
-
-Configuración clásica **IKEv1 + crypto map**, con la propuesta alineada a la del Paso 8 (script: [`scripts/cisco-vpn.txt`](scripts/cisco-vpn.txt)):
-
+ 
+Configuración clásica **IKEv1 + crypto map** al nivel de cifrado del FortiGate (DES), con la propuesta alineada a la del Paso 8. Se pega un bloque `configure terminal … end` a la vez (script completo: [`scripts/cisco-vpn.txt`](scripts/cisco-vpn.txt)).
+ 
+**9.1 — Fase 1 (ISAKMP) y clave compartida**
+ 
 ```bash
 enable
 configure terminal
-
-! --- Fase 1 (ISAKMP) ---
-! Política 10: la que dejó el asistente del FortiGate en este laboratorio
+ 
 crypto isakmp policy 10
+ encryption des
+ hash md5
+ authentication pre-share
+ group 5
+ lifetime 86400
+exit
+ 
+crypto isakmp policy 20
  encryption des
  hash sha
  authentication pre-share
- group 2
+ group 5
  lifetime 86400
 exit
-
-! Política 20: alternativa de cifrado fuerte
-crypto isakmp policy 20
- encryption aes 256
- hash sha256
- authentication pre-share
- group 14
- lifetime 86400
-exit
-
+ 
 crypto isakmp key Lab12345 address 203.0.113.3
-
-! --- Fase 2 (transform-sets) ---
-crypto ipsec transform-set TS-DES esp-des esp-sha-hmac
+ 
+end
+```
+ 
+**9.2 — Fase 2 (transform-sets) y ACL del tráfico interesante**
+ 
+```bash
+configure terminal
+ 
+crypto ipsec transform-set TS-DES-MD5 esp-des esp-md5-hmac
  mode tunnel
 exit
-
-crypto ipsec transform-set TS-AES esp-aes 256 esp-sha256-hmac
+ 
+crypto ipsec transform-set TS-DES-SHA esp-des esp-sha-hmac
  mode tunnel
 exit
-
-! --- ACL del tráfico interesante (selector de la VPN) ---
+ 
 ! Origen = red local del Cisco (Usuarios), destino = red del Servidor
 ip access-list extended VPN-TRAFFIC
  permit ip 20.25.30.0 0.0.0.127 20.25.30.128 0.0.0.15
 exit
-
-! --- Crypto map ---
+ 
+end
+```
+ 
+**9.3 — Crypto map, interfaz WAN y ruta**
+ 
+```bash
+configure terminal
+ 
 crypto map CM-VPN 10 ipsec-isakmp
  set peer 203.0.113.3
- set transform-set TS-DES TS-AES
+ set transform-set TS-DES-MD5 TS-DES-SHA
+ set pfs group5
  match address VPN-TRAFFIC
 exit
-
-! --- Aplicar el crypto map en la interfaz WAN ---
+ 
 interface GigabitEthernet0/0
  crypto map CM-VPN
 exit
-
-! --- Ruta hacia la red del Servidor a través del FortiGate ---
-! Necesaria para que el tráfico salga por Gi0/0 y el crypto map lo cifre
+ 
+! Ruta hacia la red del Servidor a través del FortiGate
 ip route 20.25.30.128 255.255.255.240 203.0.113.3
-
+ 
 end
 write memory
 ```
-
+ 
+> **Por qué dos políticas y dos transform-sets:** el FortiGate ofrece DES con MD5 y con SHA1; el Cisco acepta cualquiera de las dos combinaciones y el túnel usa la que coincida.
 > **ACL en espejo:** el FortiGate declara Local `20.25.30.128/28` y Remote `20.25.30.0/25`; el `permit` del Cisco tiene origen y destino invertidos respecto a eso (`20.25.30.0/25` → `20.25.30.128/28`).
 > **Ruta estática:** sin ella el router no tiene por dónde sacar el tráfico hacia `20.25.30.128/28` y el crypto map nunca se activa. Como el tráfico que coincide con `VPN-TRAFFIC` solo puede salir cifrado, si no hay túnel se descarta y nunca viaja en claro.
-> **PFS:** si en el Paso 8 la Fase 2 del FortiGate muestra `pfs enable`, agregar dentro del crypto map `set pfs groupN` con el mismo grupo que muestra `dhgrp`.
-
+> **PFS:** `set pfs group5` usa un grupo incluido en el `dhgrp` de la Fase 2. Si el Paso 8 muestra `set pfs disable`, quitar esa línea; si el `dhgrp` no incluye el `5`, usar el grupo que muestre.
+ 
 **Verificación:**
 ```bash
 show crypto isakmp policy
 show crypto map
 ```
 Antes de generar tráfico, `show crypto isakmp sa` puede no mostrar nada: el túnel sube con el primer paquete interesante (Paso 13).
-
+ 
 > Ver evidencia: [11_cisco_crypto_config.png](screenshots/11_cisco_crypto_config.png)
 
 ---
