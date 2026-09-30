@@ -633,7 +633,7 @@ En el FortiGate: `VPN → IPsec Tunnels → VPN-to-Cisco → Bring Down`. En el 
 
 Repetir `traceroute` y `curl` desde el Usuario: ambos deben **fallar o quedar colgados**. Luego restablecer (`no shutdown` en `e0/0` y `Bring Up`) y repetir la prueba para mostrar que se recupera.
 
-> Ver evidencia: [18_traceroute_tunel_caido.png](screenshots/18_traceroute_tunel_caido.png), [19_ipsec_monitor_fortigate.png](screenshots/19_ipsec_monitor_fortigate.png)
+> Ver evidencia: [18_traceroute_tunel_caido.png](screenshots/18_traceroute_tunel_caido.png), [19_ipsec_monitor_fortigate_down.png](screenshots/19_ipsec_monitor_fortigate_down.png), [19_ipsec_monitor_fortigate_up.png](screenshots/19_ipsec_monitor_fortigate_up.png)
 
 **13.3 — Verificación de NAT**
 
@@ -681,8 +681,9 @@ Numeradas en el orden en que se toman durante el procedimiento.
 | 16 | [`16_traceroute_tunel_activo.png`](screenshots/16_traceroute_tunel_activo.png) | 13.1 | Traceroute exitoso del Usuario al Web Server con el túnel activo. |
 | 17 | [`17_cisco_crypto_sa.png`](screenshots/17_cisco_crypto_sa.png) | 13.1 | `show crypto isakmp sa` y `show crypto ipsec sa` del Cisco. |
 | 18 | [`18_traceroute_tunel_caido.png`](screenshots/18_traceroute_tunel_caido.png) | 13.2 | Traceroute fallido con el túnel caído. |
-| 19 | [`19_ipsec_monitor_fortigate.png`](screenshots/19_ipsec_monitor_fortigate.png) | 13.2 | `Monitor → IPsec Monitor` con el túnel `Up` y luego `Down`. |
-| 20 | [`20_prueba_nat.png`](screenshots/20_prueba_nat.png) | 13.3 | `show ip nat translations` del Cisco y Forward Traffic del FortiGate. |
+| 19 | [`19_ipsec_monitor_fortigate_down.png`](screenshots/19_ipsec_monitor_fortigate_down.png) | 13.2 | `Monitor → IPsec Monitor` con el túnel `Down`. |
+| 20 | [`20_ipsec_monitor_fortigate_up.png`](screenshots/20_ipsec_monitor_fortigate_up.png) | 13.2 | `Monitor → IPsec Monitor` con el túnel `Up` |
+| 21 | [`21_prueba_nat.png`](screenshots/21_prueba_nat.png) | 13.3 | `show ip nat translations` del Cisco y Forward Traffic del FortiGate. |
 
 ---
 
