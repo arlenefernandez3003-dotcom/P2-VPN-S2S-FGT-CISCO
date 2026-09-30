@@ -343,13 +343,13 @@ Los tres deben responder. Si el ping de la PC falla, revisar el firewall de Wind
 ---
 
 ### Paso 7. VPN IPsec en el FortiGate (GUI)
-
+ 
 **Ruta:** `VPN → VPN Wizard`
-
+ 
 En 7.6.2 el asistente es una sola pantalla con tres bloques (**VPN Tunnel**, **Remote Site**, **Local FortiGate**). Nombre del túnel: `VPN-to-Cisco`. Se llenan los tres bloques y se pulsa **Next** para ver el resumen antes de **Submit**.
-
+ 
 **Bloque VPN Tunnel:**
-
+ 
 | Campo | Valor |
 |---|---|
 | Authentication method | `Pre-shared key` |
@@ -358,22 +358,24 @@ En 7.6.2 el asistente es una sola pantalla con tres bloques (**VPN Tunnel**, **R
 | Transport | `Auto` |
 | Use Fortinet encapsulation | Desactivado |
 | NAT traversal | `Disable` |
-
+ 
 > **IKE `Version 1`:** el Router Cisco usa el modelo clásico `crypto isakmp` (crypto map), que es IKEv1. Los dos extremos deben hablar la misma versión de IKE.
 > **NAT traversal → `Disable`:** ningún equipo está detrás de un dispositivo que haga NAT; ambos están en el mismo segmento `203.0.113.0/29` y se ven con su IP real.
-
+ 
 **Bloque Remote Site:**
-
+ 
 | Campo | Valor |
 |---|---|
-| Remote site device type | `Cisco` (ícono de Cisco) |
+| Remote site device type | `FortiGate` (ícono de FortiGate) |
 | Remote site device | `Accessible and static` |
 | IP/FQDN | `203.0.113.2` |
 | Route this device's internet traffic through the remote site | Desactivado |
 | Remote site subnets that can access VPN | `20.25.30.0/25` (red de Usuarios) |
-
+ 
+> **Ícono de FortiGate:** el ícono solo elige la plantilla del asistente (sus valores por defecto); no cambia el protocolo. En la red el túnel es IPsec estándar y el peer sigue siendo el Router Cisco, que no ve qué ícono se eligió. Con la plantilla de FortiGate el asistente completa el túnel sin errores en 7.6.2.
+ 
 **Bloque Local FortiGate:**
-
+ 
 | Campo | Valor |
 |---|---|
 | Outgoing interface that binds to tunnel | `port1` |
@@ -381,11 +383,13 @@ En 7.6.2 el asistente es una sola pantalla con tres bloques (**VPN Tunnel**, **R
 | Local interface | `port2` (LAN-SERVIDOR) |
 | Local subnets that can access VPN | `20.25.30.128/28` (red del Servidor) |
 | Allow remote site's internet traffic through this device | Desactivado |
-
+ 
 > Ver evidencia: [07_ipsec_tunel_fortigate.png](screenshots/07_ipsec_tunel_fortigate.png), [08_ipsec_remoto_local_fortigate.png](screenshots/08_ipsec_remoto_local_fortigate.png)
-
+ 
 **Resumen y Submit:** en la pantalla **Review** el asistente lista los objetos que va a crear (grupos de direcciones `VPN-to-Cisco_local` y `VPN-to-Cisco_remote`, la interfaz de Fase 1 y Fase 2, la zona, las dos políticas y la ruta hacia la red remota). Pulsar **Submit** y esperar a que termine **sin mensajes de error**.
-
+ 
+> El asistente crea todos los objetos en una sola operación. Si aparece un error (por ejemplo `phase1 interface object VPN-to-Cisco already exists`), el túnel quedó a medias: borrarlo desde `VPN → IPsec Tunnels` (primero las políticas `vpn_VPN-to-Cisco_*` en `Policy & Objects → Firewall Policy`) y volver a ejecutar el asistente completo. No completar la Fase 2 a mano por CLI.
+ 
 > Ver evidencia: [09_ipsec_resumen_fortigate.png](screenshots/09_ipsec_resumen_fortigate.png)
 
 ---
