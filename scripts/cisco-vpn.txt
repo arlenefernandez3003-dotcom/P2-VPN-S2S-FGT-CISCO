@@ -1,0 +1,59 @@
+enable
+configure terminal
+ 
+crypto isakmp policy 10
+ encryption des
+ hash md5
+ authentication pre-share
+ group 5
+ lifetime 86400
+exit
+ 
+crypto isakmp policy 20
+ encryption des
+ hash sha
+ authentication pre-share
+ group 5
+ lifetime 86400
+exit
+ 
+crypto isakmp key Lab12345 address 203.0.113.3
+ 
+end
+
+configure terminal
+ 
+crypto ipsec transform-set TS-DES-MD5 esp-des esp-md5-hmac
+ mode tunnel
+exit
+ 
+crypto ipsec transform-set TS-DES-SHA esp-des esp-sha-hmac
+ mode tunnel
+exit
+ 
+! Origen = red local del Cisco (Usuarios), destino = red del Servidor
+ip access-list extended VPN-TRAFFIC
+ permit ip 20.25.30.0 0.0.0.127 20.25.30.128 0.0.0.15
+exit
+ 
+end
+
+
+configure terminal
+ 
+crypto map CM-VPN 10 ipsec-isakmp
+ set peer 203.0.113.3
+ set transform-set TS-DES-MD5 TS-DES-SHA
+ set pfs group5
+ match address VPN-TRAFFIC
+exit
+ 
+interface Ethernet0/0
+ crypto map CM-VPN
+exit
+ 
+! Ruta hacia la red del Servidor a través del FortiGate
+ip route 20.25.30.128 255.255.255.240 203.0.113.3
+ 
+end
+write memory
