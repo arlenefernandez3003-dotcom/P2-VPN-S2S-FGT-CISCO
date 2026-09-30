@@ -564,15 +564,15 @@ ip access-list extended NAT-NO-VPN
  permit ip 20.25.30.0 0.0.0.127 any
 exit
 
-interface GigabitEthernet0/0
+interface Ethernet0/0
  ip nat outside
 exit
 
-interface GigabitEthernet0/1.10
+interface Ethernet0/1.10
  ip nat inside
 exit
 
-ip nat inside source list NAT-NO-VPN interface GigabitEthernet0/0 overload
+ip nat inside source list NAT-NO-VPN interface Ethernet0/0 overload
 
 end
 write memory
