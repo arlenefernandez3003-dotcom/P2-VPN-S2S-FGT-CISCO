@@ -405,15 +405,16 @@ show vpn ipsec phase2-interface VPN-to-Cisco
 
 Anotar estos campos:
 
-| Campo en el FortiGate | Dónde se usa en el Cisco |
-|---|---|
-| `ike-version` | Debe ser `1` (si muestra `2`, repetir el Paso 7 con `Version 1`) |
-| `proposal` de Fase 1 (ej. `des-sha1`) | `crypto isakmp policy` → `encryption` y `hash` |
-| `dhgrp` de Fase 1 (ej. `2`) | `crypto isakmp policy` → `group` |
-| `proposal` de Fase 2 | `crypto ipsec transform-set` |
-| `pfs` / `dhgrp` de Fase 2 | `set pfs groupN` en el crypto map |
-
-> En este laboratorio el asistente de FortiOS 7.6.2 dejó la Fase 1 en `des-sha1` con `dhgrp 2`, por eso la configuración del Cisco (Paso 9) incluye esa política. Además incluye una segunda política AES-256/SHA-256/DH 14 para el caso en que el asistente proponga cifrado fuerte; el Cisco usa la que coincida.
+| Campo en el FortiGate | Valor esperado | Dónde se usa en el Cisco |
+|---|---|---|
+| `ike-version` (Fase 1) | `1` | Modelo `crypto isakmp` (IKEv1) |
+| `proposal` (Fase 1) | `des-md5 des-sha1` | `crypto isakmp policy` 10 (`md5`) y 20 (`sha`), `encryption des` |
+| `dhgrp` (Fase 1) | incluye `5` | `group 5` en las políticas ISAKMP |
+| `proposal` (Fase 2) | `des-md5 des-sha1` | `transform-set` `TS-DES-MD5` y `TS-DES-SHA` |
+| `pfs` y `dhgrp` (Fase 2) | `pfs enable`, `dhgrp` incluye `5` | `set pfs group5` en el crypto map |
+| `src-name` / `dst-name` (Fase 2) | `VPN-to-Cisco_local` / `_remote` | ACL `VPN-TRAFFIC` en espejo (Paso 9) |
+ 
+> **Cifrado bajo (low encryption):** el FortiGate solo admite **DES**, por eso ambas fases proponen `des-md5` y `des-sha1`. También se ve en `VPN → IPsec Tunnels → VPN-to-Cisco → Edit` (*Encryption - authentication* y *Diffie-Hellman groups*). El Cisco se configura al mismo nivel en el Paso 9: DES, MD5/SHA1 y grupo 5, sin AES.
 
 > Ver evidencia: [10_propuesta_fortigate.png](screenshots/10_propuesta_fortigate.png)
 
