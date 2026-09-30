@@ -62,9 +62,9 @@ Toda la configuración y demostración del **FortiGate se hace por GUI**. El Rou
                             │               │
                      ┌──────┴───────┐ ┌─────┴────────┐
                      │ Router Cisco │ │   FortiGate  │
-                     │ Gi0/0 (WAN)  │ │ port1 (WAN)  │
+                     │ e0/0 (WAN)   │ │ port1 (WAN)  │
                      │ 203.0.113.2  │ │ 203.0.113.3  │
-                     │ Gi0/1 (trunk)│ │ port2 (LAN)  │
+                     │ e0/1 (trunk) │ │ port2 (LAN)  │
                      │ └ Gi0/1.10   │ │ 20.25.30.130 │
                      │  20.25.30.2  │ │              │
                      └──────┬───────┘ └─────┬────────┘
@@ -115,9 +115,9 @@ Toda la configuración y demostración del **FortiGate se hace por GUI**. El Rou
 
 | Interfaz | Rol | Dirección IP | Máscara |
 |---|---|---|---|
-| **GigabitEthernet0/0** | WAN hacia la Nube | 203.0.113.2 | /29 |
-| **GigabitEthernet0/1** | Trunk hacia SW-USUARIOS (sin IP) | — | — |
-| **GigabitEthernet0/1.10** | Gateway VLAN 10 (encapsulación dot1Q 10) | 20.25.30.2 | /25 |
+| **Ethernet0/0** | WAN hacia la Nube | 203.0.113.2 | /29 |
+| **Ethernet0/1** | Trunk hacia SW-USUARIOS (sin IP) | — | — |
+| **Ethernet0/1.10** | Gateway VLAN 10 (encapsulación dot1Q 10) | 20.25.30.2 | /25 |
 
 **FortiGate (lado Servidor):**
 
@@ -131,8 +131,8 @@ Toda la configuración y demostración del **FortiGate se hace por GUI**. El Rou
 | Dispositivo | Interfaz | Dirección IP | Máscara | Gateway | Método | Rol |
 |---|---|---|---|---|---|---|
 | **PC local** | Adaptador VMnet | 203.0.113.1 | /29 | — | Estática | Acceso a la GUI del FortiGate |
-| **Router Cisco** | Gi0/0 | 203.0.113.2 | /29 | — | Estática | WAN, extremo local de la VPN |
-| **Router Cisco** | Gi0/1.10 | 20.25.30.2 | /25 | — | Estática | Gateway VLAN 10 y servidor DHCP |
+| **Router Cisco** | e0/0 | 203.0.113.2 | /29 | — | Estática | WAN, extremo local de la VPN |
+| **Router Cisco** | e0/1.10 | 20.25.30.2 | /25 | — | Estática | Gateway VLAN 10 y servidor DHCP |
 | **FortiGate** | port1 | 203.0.113.3 | /29 | — | Estática | WAN, extremo remoto de la VPN |
 | **FortiGate** | port2 | 20.25.30.130 | /28 | — | Estática | Gateway LAN Servidor |
 | **SW-USUARIOS** | e0/0 · e0/1 | — | — | — | — | Switch L2: trunk hacia el Cisco, access VLAN 10 al Usuario |
@@ -147,13 +147,13 @@ Toda la configuración y demostración del **FortiGate se hace por GUI**. El Rou
 
 Los pasos están en el orden en que se ejecutan. Cada uno depende de los anteriores.
 
-> Los nombres de interfaz del Cisco (`GigabitEthernet0/0`, `GigabitEthernet0/1`) deben ajustarse a los que muestre `show ip interface brief` en la imagen usada en PNETLab.
+> Los nombres de interfaz del Cisco (`Ethernet0/0`, `Ethernet0/1`) deben ajustarse a los que muestre `show ip interface brief` en la imagen usada en PNETLab.
 
 ---
 
 ### Paso 1. Nube PNET y PC local
 
-Un nodo **Cloud** de PNETLab conecta `Gi0/0` del Router Cisco, `port1` del FortiGate y el adaptador virtual de la PC local, todos en `203.0.113.0/29`.
+Un nodo **Cloud** de PNETLab conecta `e0/0` del Router Cisco, `port1` del FortiGate y el adaptador virtual de la PC local, todos en `203.0.113.0/29`.
 
 **Adaptador de la PC** (el que usa la VM de PNETLab, por ejemplo VMnet8 o Host-only):
 
@@ -167,9 +167,9 @@ Un nodo **Cloud** de PNETLab conecta `Gi0/0` del Router Cisco, `port1` del Forti
 
 1. Clic derecho en el área de trabajo → `Add an object → Network`.
 2. Type: `Management(Cloud0)`, nombre `Nube-PNET`.
-3. Conectar `Gi0/0` del Router Cisco a `Nube-PNET`.
+3. Conectar `e0/0` del Router Cisco a `Nube-PNET`.
 4. Conectar `port1` del FortiGate a `Nube-PNET`.
-5. Conectar `Gi0/1` del Router Cisco a `e0/0` de `SW-USUARIOS` (Paso 2); `e0/1` del switch va al Usuario.
+5. Conectar `e0/1` del Router Cisco a `e0/0` de `SW-USUARIOS` (Paso 2); `e0/1` del switch va al Usuario.
 6. Conectar `port2` del FortiGate al Web Server.
 
 ---
