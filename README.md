@@ -629,9 +629,9 @@ show crypto ipsec sa
 
 **13.2 — Con el túnel caído (no hay ruta alterna)**
 
-En el FortiGate: `VPN → IPsec Tunnels → VPN-to-Cisco → Bring Down`. En el Cisco: `clear crypto isakmp` y `clear crypto sa`. Para que no se restablezca solo, dejar el túnel abajo mientras se prueba (por ejemplo `shutdown` en `Gi0/0` del Cisco).
+En el FortiGate: `VPN → IPsec Tunnels → VPN-to-Cisco → Bring Down`. En el Cisco: `clear crypto isakmp` y `clear crypto sa`. Para que no se restablezca solo, dejar el túnel abajo mientras se prueba (por ejemplo `shutdown` en `e0/0` del Cisco).
 
-Repetir `traceroute` y `curl` desde el Usuario: ambos deben **fallar o quedar colgados**. Luego restablecer (`no shutdown` en `Gi0/0` y `Bring Up`) y repetir la prueba para mostrar que se recupera.
+Repetir `traceroute` y `curl` desde el Usuario: ambos deben **fallar o quedar colgados**. Luego restablecer (`no shutdown` en `e0/0` y `Bring Up`) y repetir la prueba para mostrar que se recupera.
 
 > Ver evidencia: [18_traceroute_tunel_caido.png](screenshots/18_traceroute_tunel_caido.png), [19_ipsec_monitor_fortigate.png](screenshots/19_ipsec_monitor_fortigate.png)
 
