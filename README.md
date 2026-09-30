@@ -633,7 +633,7 @@ En el FortiGate: `VPN → IPsec Tunnels → VPN-to-Cisco → Bring Down`. En el 
 
 Repetir `traceroute` y `curl` desde el Usuario: ambos deben **fallar o quedar colgados**. Luego restablecer (`no shutdown` en `e0/0` y `Bring Up`) y repetir la prueba para mostrar que se recupera.
 
-> Ver evidencia: [18_traceroute_tunel_caido.png](screenshots/18_traceroute_tunel_caido.png), [19_ipsec_monitor_fortigate_down.png](screenshots/19_ipsec_monitor_fortigate_down.png), [19_ipsec_monitor_fortigate_up.png](screenshots/19_ipsec_monitor_fortigate_up.png)
+> Ver evidencia: [18_traceroute_tunel_caido.png](screenshots/18_traceroute_tunel_caido.png), [19_ipsec_monitor_fortigate_down.png](screenshots/19_ipsec_monitor_fortigate_down.png), [20_ipsec_monitor_fortigate_up.png](screenshots/20_ipsec_monitor_fortigate_up.png)
 
 **13.3 — Verificación de NAT**
 
@@ -643,7 +643,7 @@ ping 203.0.113.1
 ```
 En el Cisco, `show ip nat translations` debe mostrar la traducción a `203.0.113.2`. Desde el Web Server, `ping 203.0.113.1`: en `Log & Report → Forward Traffic` del FortiGate se ve la política `Servidor-to-WAN` con la IP de origen traducida a `203.0.113.3`.
 
-> Ver evidencia: [20_prueba_nat.png](screenshots/20_prueba_nat.png)
+> Ver evidencia: [21_prueba_nat.png](screenshots/21_prueba_nat.png)
 
 **13.4 — Si el túnel no sube**
 
