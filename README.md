@@ -230,19 +230,19 @@ configure terminal
 hostname R-CISCO
 no ip domain-lookup
 
-interface GigabitEthernet0/0
+interface Ethernet0/0
  description WAN hacia la Nube PNET
  ip address 203.0.113.2 255.255.255.248
  no shutdown
 exit
 
-interface GigabitEthernet0/1
+interface Ethernet0/1
  description Trunk hacia SW-USUARIOS
  no ip address
  no shutdown
 exit
 
-interface GigabitEthernet0/1.10
+interface Ethernet0/1.10
  description VLAN 10 - Usuarios
  encapsulation dot1Q 10
  ip address 20.25.30.2 255.255.255.128
@@ -266,7 +266,7 @@ write memory
 show ip interface brief
 show ip dhcp pool
 ```
-`Gi0/0` y `Gi0/1.10` deben estar `up/up`. El Usuario debe recibir una IP del rango `20.25.30.3 – 20.25.30.126` con gateway `20.25.30.2`.
+`e0/0` y `e0/1.10` deben estar `up/up`. El Usuario debe recibir una IP del rango `20.25.30.3 – 20.25.30.126` con gateway `20.25.30.2`.
 
 > Ver evidencia: [02_cisco_interfaces.png](screenshots/02_cisco_interfaces.png), [03_cisco_dhcp.png](screenshots/03_cisco_dhcp.png)
 
